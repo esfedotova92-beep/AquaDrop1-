@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер воды</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .goal {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            background: #764ba2;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .stats {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .reset-btn {
+            width: 100%;
+            margin-top: 15px;
+            background: #ff6b6b;
+        }
+        
+        .reset-btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Трекер воды</h1>
+        <div class="goal">Цель: <span id="goalAmount">2000</span> мл</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar">0%</div>
+        </div>
+        
+        <div class="stats">
+            Выпито: <span id="currentAmount">0</span> мл
+        </div>
+        
+        <div class="buttons">
+            <button onclick="addWater(150)">+150 мл<br><small>Стакан</small></button>
+            <button onclick="addWater(250)">+250 мл<br><small>Кружка</small></button>
+            <button onclick="addWater(500)">+500 мл<br><small>Бутылка</small></button>
+        </div>
+        
+        <button class="reset-btn" onclick="resetTracker()">🔄 Сбросить</button>
+    </div>
+
+    <script>
+        let currentWater = parseInt(localStorage.getItem('water')) || 0;
+        const goalWater = 2000;
+        
+        function updateDisplay() {
+            document.getElementById('currentAmount').textContent = currentWater;
+            const percentage = Math.min((currentWater / goalWater) * 100, 100);
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = Math.round(percentage) + '%';
+            
+            if (currentWater >= goalWater) {
+                document.getElementById('progressBar').textContent = '✓ Цель достигнута!';
+            }
+            
+            localStorage.setItem('water', currentWater);
+        }
+        
+        function addWater(amount) {
+            currentWater += amount;
+            updateDisplay();
+        }
+        
+        function resetTracker() {
+            if (confirm('Сбросить счётчик?')) {
+                currentWater = 0;
+                updateDisplay();
+            }
+        }
+        
+        // Инициализация
+        updateDisplay();
+    </script>
+</body>
+</html>
